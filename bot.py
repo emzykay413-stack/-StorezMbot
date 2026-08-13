@@ -26,7 +26,7 @@ SUPPORT_CHANNEL = "https://t.me/ForexMarketBrief"  # or your support contact
 
 # ---------- Keyboards ----------
 def get_main_keyboard():
-    """Inline keyboard with Open App and Visit Website."""
+    """Inline keyboard with Open App, Visit Website, and Join Channel."""
     keyboard = [
         [
             InlineKeyboardButton(
@@ -36,6 +36,12 @@ def get_main_keyboard():
             InlineKeyboardButton(
                 text="🌐 Visit Website",
                 url=WEBSITE_URL
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="📢 Join Channel",
+                url=SUPPORT_CHANNEL
             )
         ]
     ]
