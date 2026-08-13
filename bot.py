@@ -31,7 +31,7 @@ def get_main_keyboard():
         [
             InlineKeyboardButton(
                 text="🛍 Open STORESM",
-                web_app={"url": MINI_APP_URL}
+                url=MINI_APP_URL
             ),
             InlineKeyboardButton(
                 text="🌐 Visit Website",
@@ -44,7 +44,7 @@ def get_main_keyboard():
 def get_app_only_keyboard():
     """Keyboard with only the Open App button."""
     keyboard = [
-        [InlineKeyboardButton("🛍 Open STORESM", web_app={"url": MINI_APP_URL})]
+        [InlineKeyboardButton("🛍 Open STORESM", url=MINI_APP_URL)]
     ]
     return InlineKeyboardMarkup(keyboard)
 
@@ -58,11 +58,11 @@ def get_categories_keyboard():
     ]
     keyboard = []
     for label, param in categories:
-        # Deep link: ?startapp=category=param
-        deep_link = f"{MINI_APP_URL}?startapp=category={param}"
-        keyboard.append([InlineKeyboardButton(label, web_app={"url": deep_link})])
+        # Deep link: ?startapp=category_param
+        deep_link = f"{MINI_APP_URL}?startapp=category_{param}"
+        keyboard.append([InlineKeyboardButton(label, url=deep_link)])
     # Add a general "Open App" button at the bottom
-    keyboard.append([InlineKeyboardButton("🛍 Open STORESM", web_app={"url": MINI_APP_URL})])
+    keyboard.append([InlineKeyboardButton("🛍 Open STORESM", url=MINI_APP_URL)])
     return InlineKeyboardMarkup(keyboard)
 
 # ---------- Command Handlers ----------
