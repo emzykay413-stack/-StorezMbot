@@ -19,20 +19,19 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 if not BOT_TOKEN:
     raise ValueError("No BOT_TOKEN set in environment")
 
-# Your Mini App URL (use the one you set via BotFather)
-MINI_APP_URL = "https://t.me/StorezMbot/StorezMminiapp"   # or your direct webapp URL
+# NOTE: The Mini App is not yet set up with a valid HTTPS web server.
+# Telegram keyboard buttons require a real "https://" URL - a "t.me/..." link
+# is not valid for a `url` or `web_app` button and causes Button_url_invalid
+# errors. Once you have a real web server for the Mini App, set its HTTPS
+# URL here and register it with BotFather, then restore the web_app buttons.
 WEBSITE_URL = "https://storesm.net"
 SUPPORT_CHANNEL = "https://t.me/ForexMarketBrief"  # or your support contact
 
 # ---------- Keyboards ----------
 def get_main_keyboard():
-    """Inline keyboard with Open App and Visit Website."""
+    """Inline keyboard with Visit Website (only valid HTTPS URL available)."""
     keyboard = [
         [
-            InlineKeyboardButton(
-                text="🛍 Open STORESM",
-                url=MINI_APP_URL
-            ),
             InlineKeyboardButton(
                 text="🌐 Visit Website",
                 url=WEBSITE_URL
@@ -42,27 +41,21 @@ def get_main_keyboard():
     return InlineKeyboardMarkup(keyboard)
 
 def get_app_only_keyboard():
-    """Keyboard with only the Open App button."""
+    """Mini App is not configured yet, so just link to the website."""
     keyboard = [
-        [InlineKeyboardButton("🛍 Open STORESM", url=MINI_APP_URL)]
+        [InlineKeyboardButton("🌐 Visit Website", url=WEBSITE_URL)]
     ]
     return InlineKeyboardMarkup(keyboard)
 
 def get_categories_keyboard():
-    """Category buttons that open the app with a start_param for deep-linking."""
-    categories = [
-        ("Social Media", "social_media"),
-        ("Marketing Tools", "marketing_tools"),
-        ("Digital Resources", "digital_resources"),
-        ("Online Services", "online_services"),
+    """
+    Category browsing normally deep-links into the Mini App, but no valid
+    Mini App URL is configured yet. Show categories as plain text and only
+    offer the website link button.
+    """
+    keyboard = [
+        [InlineKeyboardButton("🌐 Visit Website", url=WEBSITE_URL)]
     ]
-    keyboard = []
-    for label, param in categories:
-        # Deep link: ?startapp=category_param
-        deep_link = f"{MINI_APP_URL}?startapp=category_{param}"
-        keyboard.append([InlineKeyboardButton(label, url=deep_link)])
-    # Add a general "Open App" button at the bottom
-    keyboard.append([InlineKeyboardButton("🛍 Open STORESM", url=MINI_APP_URL)])
     return InlineKeyboardMarkup(keyboard)
 
 # ---------- Command Handlers ----------
@@ -76,7 +69,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "📂 Explore different categories\n"
         "🚀 Discover useful services\n"
         "🌐 Access the STORESM marketplace\n\n"
-        "Ready to explore? 👇 Tap the button below to open STORESM."
+        "🚧 Our Mini App is being set up. In the meantime, visit our "
+        "website below to explore STORESM."
     )
     await update.message.reply_text(
         welcome_text,
@@ -85,7 +79,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def app_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(
-        "🛍 Tap the button below to open the STORESM Mini App.",
+        "🚧 The STORESM Mini App isn't available yet. "
+        "In the meantime, check out our website below.",
         reply_markup=get_app_only_keyboard()
     )
 
@@ -96,7 +91,7 @@ async def categories_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
         "• Marketing Tools\n"
         "• Digital Resources\n"
         "• Online Services\n\n"
-        "Tap a category below to open the app and see relevant resources."
+        "Our Mini App is coming soon. For now, visit our website below to learn more."
     )
     await update.message.reply_text(
         text,
@@ -109,8 +104,8 @@ async def website_command(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     help_text = (
         "🤖 *STORESM Bot Commands*\n\n"
-        "/start – Welcome & open the Mini App\n"
-        "/app – Open the Mini App directly\n"
+        "/start – Welcome message & website link\n"
+        "/app – Mini App status (coming soon)\n"
         "/categories – Browse product categories\n"
         "/website – Visit storesm.net\n"
         "/help – Show this help message\n"
